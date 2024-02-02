@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  spark-master:
+    container_name: spark-master
+    build: 
+      context: .
+      dockerfile: master.Dockerfile
+    ports:
+      - 9090:8080
+      - 7077:7077
+
+  spark-worker-1:
+    container_name: spark-worker-1
+    build: 
+      context: .
+      dockerfile: worker.Dockerfile
+    depends_on:
+      - spark-master
+  
+  spark-worker-2:
+    container_name: spark-worker-2
+    build: 
+      context: .
+      dockerfile: worker.Dockerfile
+    depends_on:
+      - spark-master
