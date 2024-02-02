@@ -1,0 +1,42 @@
+---
+repos:
+  - repo: https://github.com/psf/black
+    rev: 23.11.0
+    hooks:
+      - id: black
+        language_version: python3.11
+  
+  - repo: meta
+    hooks:
+      - id: check-useless-excludes
+
+  - repo: https://github.com/seddonym/import-linter
+    rev: v2.0
+    hooks:
+      - id: import-linter
+        language_version: python3.11
+
+
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.11.0 # forces the commits to be conventional
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        args: ["--config", "frontend/commitlint.config.js"]
+        additional_dependencies: ["@commitlint/config-conventional"]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-json
+        exclude: "vscode/launch.json$"
+      - id: check-yaml
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+        files: ^.+\.(py|sh)$
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.2.3
+    hooks:
+      - id: yamlfmt
+        args: [--mapping, '2', --sequence, '4', --offset, '2', --preserve-quotes]

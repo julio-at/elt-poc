@@ -2,34 +2,67 @@
 
 ## Description
 
-This is a simple project to run PySpark scripts in a Docker container. It uses a `docker-compose` file to create a Spark cluster with one master and two workers. The `Makefile` contains commands to upload files, submit and run scripts.
-The `scripts/` folder contains the PySpark scripts, and the `files/` folder contains the files to be uploaded to the container.
+This is a simple project to run PySpark scripts in a Docker container. It uses a `docker-compose` file to create a Spark cluster with one master and two workers. 
 
-***This project does not require to have Spark or Java installed in the host machine, the `requirements.txt` contains the packages used, just for linting and testing.***
+The `Makefile` contains commands to upload files, submit and run scripts.
+
+The `scripts/` folder contains the PySpark scripts, and the `input_files/` folder contains the files to be uploaded to the container.
+
+The `output/` directory is the destination of the resulting files.
+
+```
+.
+├── .pre-commit.yaml # To prevent commits without certain ruling
+├── Makefile # Automate commands & env usage
+├── README.md 
+├── input_files
+│   ├── (*.csv)
+
+├── output
+│   ├── (*.csv)
+├── requirements.txt # can be used with pipenv / pip3
+├── scripts
+│   ├── process.py
+│   ├── show.py
+├── settings.py # project contants configs
+├── compose.yml # docker manifest for the containers
+├── master.Dockerfile # master Spark image
+└── worker.Dockerfile # spark node image
+
+```
+
+***This project does not require to have Spark / Java installed in the host machine, the `requirements.txt` contains the packages used, just for linting and testing.***
 
 ## Requirements
 
 - Python ^3.11
 - Docker ^24.0.7
-- Make ^3.81
+- Make ^3.81 
+
+- Build the Docker containers
+```bash
+docker compose up --build -d
 
 ## Running an example script and pulling the output files
 
-- Run a basic script
+- Run the main process script
 ```bash
-docker compose up --build -d && make upload FILE=example.csv && make submit-run SCRIPT=example.py
+make upload FILE=example_data.csv && make submit-run SCRIPT=process.py
 ```
 
 - Pull the output file to the host machine (expecting the output files from the example script)
 ```bash
 make pull
 ```
+
+
 ## Makefile commands
-- `make upload FILE=example.csv` - Upload a file to the spark-master container
-- `make submit-run SCRIPT=example.py` - Submit a script and run it
-- `make pull` - Pull the output files **(This only works with the example.py script)**
-- `make run SCRIPT=example.py` - Run a script
-- `make submit SCRIPT=example.py` - Submit a script
+- `make upload FILE=example_data.csv` - Upload a file to the spark-master container
+- `make submit-run SCRIPT=process.py` - Submit a script and run it
+- `make pull OUTPUT=output_results` - Pull the output files **(This only works with the process.py pre-executed!)**
+
+- `make run SCRIPT=process.py` - Run a script
+- `make submit SCRIPT=process.py` - Submit a script
 
 ## Known issues
 
